@@ -1,4 +1,4 @@
-# quiniela
+
 This will be the repo for Puiniela project
 
 [WIP]
