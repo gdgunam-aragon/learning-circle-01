@@ -34,17 +34,31 @@ POSTGRES_TEST = {
     'db': os.environ.get('DB_NAME')
 }
 
+POSTGRES_DEV = {
+    'user': os.environ.get('DB_USER'),
+    'pw': os.environ.get('DB_PASSWORD'), # [TODO] Change this to env variable
+    'host': os.environ.get('DB_HOST'),
+    'port': '5432',
+    'db': os.environ.get('DB_NAME')
+}
+
 
 # THE DIFFERENT CONFIGURATION CLASSES
 
 class DevelopmentConfig(Config):  # DEVELOPMENT CONFIG
+    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
+                              'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_DEV['user'],
+                                                                                    pw=POSTGRES_DEV['pw'],
+                                                                                    url=POSTGRES_DEV['host'],
+                                                                                    db=POSTGRES_DEV[
+                                                                                        'db'])  # THIS NEED A SET OF CONFIGURATION VARIABLES
     DEBUG = True
 
 
 
 class TestingConfig(Config):  # TEST CONFIG
     # TESTING = True
-    DEBUG = False
+    DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
                               'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_TEST['user'],
                                                                                     pw=POSTGRES_TEST['pw'],
@@ -61,6 +75,7 @@ class ProductionConfig(Config):  # PRODUCTION CONFIG
 # HERE WE ASSIGN THE DIFFERENT CLASSES TO A DICTIONARY IN ORDER TO USE EACH CONFIG CLASS
 config = {
     'testing': TestingConfig,
+    'development': DevelopmentConfig,
     'production': ProductionConfig,
     'default': TestingConfig
 }
