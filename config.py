@@ -46,13 +46,17 @@ POSTGRES_DEV = {
 # THE DIFFERENT CONFIGURATION CLASSES
 
 class DevelopmentConfig(Config):  # DEVELOPMENT CONFIG
-    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
-                              'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_DEV['user'],
-                                                                                    pw=POSTGRES_DEV['pw'],
-                                                                                    url=POSTGRES_DEV['host'],
-                                                                                    db=POSTGRES_DEV[
-                                                                                        'db'])  # THIS NEED A SET OF CONFIGURATION VARIABLES
+    # SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
+    #                           'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_DEV['user'],
+    #                                                                                 pw=POSTGRES_DEV['pw'],
+    #                                                                                 url=POSTGRES_DEV['host'],
+    #                                                                                 db=POSTGRES_DEV[
+    #                                                                                     'db'])  # THIS NEED A SET OF CONFIGURATION VARIABLES
+    # DEBUG = True
+
     DEBUG = True
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
+        'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
 
 
 
@@ -77,5 +81,5 @@ config = {
     'testing': TestingConfig,
     'development': DevelopmentConfig,
     'production': ProductionConfig,
-    'default': TestingConfig
+    'default': DevelopmentConfig
 }

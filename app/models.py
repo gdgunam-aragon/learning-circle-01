@@ -2,8 +2,9 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, SignatureExpired, BadSignature
 from flask import current_app, request, url_for
+from flask_login import UserMixin
 
-from . import db
+from . import db, login_manager
 
 class Permission:
    EDIT_ACCOUNT = 2
@@ -68,14 +69,14 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key = True)
     email =  db.Column(db.String(64), unique = True, index = True)
     username =  db.Column(db.String(64), unique = True, index = True)
-    role_id = db.Column(db.Interger, db.ForeignKey("role.id"))
+    role_id = db.Column(db.Integer, db.ForeignKey("role.id"))
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean, default = False)
     name = db.Column(db.String(64))
     member_since = db.Column(db.DateTime(), default = datetime.utcnow)
     last_seen = db.Column(db.DateTime(), default = datetime.utcnow)
     
-       def __init__(self, **kwargs):  # ROLE ASSIGNMENT USING THE CURRENT_APP USER EMAIL
+    def __init__(self, **kwargs):  # ROLE ASSIGNMENT USING THE CURRENT_APP USER EMAIL
         super(User, self).__init__(**kwargs)
         if self.role is None:
             if self.email == current_app.config['APP_ADMIN']:
