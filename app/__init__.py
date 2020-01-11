@@ -25,4 +25,10 @@ def create_app(config_name):
     moment.init_app(app)
     db.init_app(app)
 
+    from .api import api as api_blueprint
+    app.register_blueprint(api_blueprint, url_prefix='/api/v1')
+
+    from .api_ops import api_ops as api_ops_blueprint
+    app.register_blueprint(api_ops_blueprint, url_prefix='/api_ops/v1')
+
     return app
